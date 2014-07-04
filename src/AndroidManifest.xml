@@ -16,11 +16,18 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.cyanogenmod.launcher.home"
-    android:versionCode="1"
-    android:versionName="0.0.1">
+    android:versionCode="2"
+    android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
 
+    <permission
+        android:name="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA"
+        android:label="@string/permission_label_read_extension_data"
+        android:description="@string/permission_desc_read_extension_data"
+        android:protectionLevel="normal" />
+
+    <uses-permission android:name="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA" />
     <uses-permission android:name="com.android.launcher.home.permissions.HOME_APP"/>
 
     <application
