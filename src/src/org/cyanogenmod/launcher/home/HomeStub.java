@@ -21,15 +21,41 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.Toast;
 
 import com.android.launcher.home.Home;
 
+import org.cyanogenmod.launcher.cardprovider.DashClockExtensionCardProvider;
+import org.cyanogenmod.launcher.cardprovider.ICardProvider;
+import org.cyanogenmod.launcher.cards.SimpleMessageCard;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
+import it.gmariotti.cardslib.library.view.CardListView;
+
 public class HomeStub implements Home {
 
-    private HomeLayout mHomeLayout;
     private static final String TAG = "HomeStub";
+    private static final String NO_EXTENSIONS_CARD_ID = "noExtensions";
+    private HomeLayout mHomeLayout;
+    private Context mHostActivityContext;
+    private boolean mShowContent = false;
+    private SimpleMessageCard mNoExtensionsCard;
+    private List<ICardProvider> mCardProviders = new ArrayList<ICardProvider>();
+    private CMHomeCardArrayAdapter mCardArrayAdapter;
 
     private final AccelerateInterpolator mAlphaInterpolator;
+
+    private final ICardProvider.CardProviderUpdateListener mCardProviderUpdateListener =
+            new ICardProvider.CardProviderUpdateListener() {
+                @Override
+                public void onCardProviderUpdate() {
+                    refreshCards(true);
+                }
+            };
 
     public HomeStub() {
         super();
@@ -37,7 +63,36 @@ public class HomeStub implements Home {
     }
 
     @Override
+    public void setHostActivityContext(Context context) {
+        mHostActivityContext = context;
+    }
+
+    @Override
     public void onStart(Context context) {
+        if(mShowContent) {
+            // Add any providers we wish to include, if we should show content
+            initProvidersIfNeeded(context);
+        }
+    }
+
+    @Override
+    public void setShowContent(Context context, boolean showContent) {
+        mShowContent = showContent;
+        if(mShowContent) {
+            // Add any providers we wish to include, if we should show content
+            initProvidersIfNeeded(context);
+            if(mHomeLayout != null) {
+                loadCardsFromProviders(context);
+            }
+        } else {
+            for(ICardProvider cardProvider : mCardProviders) {
+                cardProvider.onHide(context);
+            }
+            mCardProviders.clear();
+            if(mHomeLayout != null) {
+                removeAllCards(context);
+            }
+        }
     }
 
     @Override
@@ -57,6 +112,13 @@ public class HomeStub implements Home {
     public void onShow(Context context) {
         if (mHomeLayout != null) {
             mHomeLayout.setAlpha(1.0f);
+
+            if(mShowContent) {
+                for(ICardProvider cardProvider : mCardProviders) {
+                    cardProvider.onShow();
+                    cardProvider.requestRefresh();
+                }
+            }
         }
     }
 
@@ -71,6 +133,9 @@ public class HomeStub implements Home {
     public void onHide(Context context) {
         if (mHomeLayout != null) {
             mHomeLayout.setAlpha(0.0f);
+        }
+        for(ICardProvider cardProvider : mCardProviders) {
+            cardProvider.onHide(context);
         }
     }
 
@@ -88,9 +153,12 @@ public class HomeStub implements Home {
 
     @Override
     public View createCustomView(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        mHomeLayout = (HomeLayout)inflater.inflate(R.layout.home_layout, null);
+        if(mHomeLayout == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+            mHomeLayout = (HomeLayout) inflater.inflate(R.layout.home_layout, null);
+        }
+
         return mHomeLayout;
     }
 
@@ -107,5 +175,111 @@ public class HomeStub implements Home {
     @Override
     public int getOperationFlags() {
         return Home.FLAG_OP_MASK;
+    }
+
+    public void initProvidersIfNeeded(Context context) {
+        if (mCardProviders.size() == 0) {
+            mCardProviders.add(new DashClockExtensionCardProvider(context, mHostActivityContext));
+
+            for (ICardProvider cardProvider : mCardProviders) {
+                cardProvider.addOnUpdateListener(mCardProviderUpdateListener);
+            }
+        }
+    }
+
+    /*
+     * Gets a list of all cards provided by each provider,
+     * and updates the UI to show them.
+     */
+    private void loadCardsFromProviders(Context context) {
+        // If cards have been initialized already, just update them
+        if(mCardArrayAdapter != null
+           && mCardArrayAdapter.getCards().size() > 0
+           && mHomeLayout != null) {
+            refreshCards(true);
+            return;
+        }
+
+        List<Card> cards = new ArrayList<Card>();
+        for(ICardProvider provider : mCardProviders) {
+           for(Card card : provider.getCards()) {
+               cards.add(card);
+           }
+        }
+
+        // If there aren't any cards, show the user a message about how to fix that!
+        if(cards.size() == 0) {
+            cards.add(getNoExtensionsCard(context));
+        }
+
+        CardListView cardListView = (CardListView) mHomeLayout.findViewById(R.id.cm_home_cards_list);
+
+        if(cardListView != null) {
+            mCardArrayAdapter = new CMHomeCardArrayAdapter(context, cards);
+            mCardArrayAdapter.setEnableUndo(true, (View)mHomeLayout);
+            cardListView.setAdapter(mCardArrayAdapter);
+        }
+    }
+
+    /**
+     * Creates a card with a message to inform the user they have no extensions
+     * installed to publish content.
+     */
+    private Card getNoExtensionsCard(final Context context) {
+        if (mNoExtensionsCard == null) {
+            mNoExtensionsCard = new SimpleMessageCard(context);
+            mNoExtensionsCard.setTitle(context.getResources().getString(R.string.no_extensions_card_title));
+            mNoExtensionsCard.setBody(context.getResources().getString(R.string.no_extensions_card_body));
+            mNoExtensionsCard.setId(NO_EXTENSIONS_CARD_ID);
+        }
+
+        return mNoExtensionsCard;
+    }
+
+    /**
+     * Refresh all cards by asking the providers to update them.
+     * @param addNew If providers have new cards that have not
+     * been displayed yet, should they be added?
+     */
+    public void refreshCards(boolean addNew) {
+        List<Card> originalCards = mCardArrayAdapter.getCards();
+
+        List<Card> cardsToAdd = new ArrayList<Card>();
+        // Allow each provider to update it's cards
+        for(ICardProvider cardProvider : mCardProviders) {
+            cardsToAdd = cardProvider.updateAndAddCards(originalCards);
+            if(addNew) {
+                mCardArrayAdapter.addAll(cardsToAdd);
+            }
+        }
+
+        int cardCount = originalCards.size() + cardsToAdd.size();
+        if (originalCards.contains(mNoExtensionsCard) && cardCount > 1) {
+            mCardArrayAdapter.remove(mNoExtensionsCard);
+        }
+        mCardArrayAdapter.notifyDataSetChanged();
+    }
+
+    private void removeAllCards(Context context) {
+        CardListView cardListView = (CardListView) mHomeLayout.findViewById(R.id.cm_home_cards_list);
+        // Set CardArrayAdapter to an adapter with an empty list
+        List<Card> cards = new ArrayList<Card>();
+        mCardArrayAdapter = new CMHomeCardArrayAdapter(context, cards);
+        cardListView.setAdapter(mCardArrayAdapter);
+    }
+
+    public class CMHomeCardArrayAdapter extends CardArrayAdapter {
+
+        public CMHomeCardArrayAdapter(Context context, List<Card> cards) {
+            super(context, cards);
+        }
+
+        public List<Card> getCards() {
+            List<Card> cardsToReturn = new ArrayList<Card>();
+            for(int i = 0; i < getCount(); i++) {
+                cardsToReturn.add(getItem(i));
+            }
+            return cardsToReturn;
+        }
     }
 }
