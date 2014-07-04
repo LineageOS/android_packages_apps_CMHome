@@ -15,18 +15,37 @@
  -->
 
 <org.cyanogenmod.launcher.home.HomeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#e7e7e7"
     android:orientation="vertical"
     android:layout_marginBottom="16dp">
 
-    <!-- Header layout -->
     <ImageView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:src="@drawable/bg_header"
         android:scaleType="centerCrop"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <it.gmariotti.cardslib.library.view.CardListView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/cm_home_cards_list"
+            card:list_card_layout_resourceID="@layout/list_card_image_layout"/>
+
+        <include layout="@layout/list_card_undo_message"
+            android:layout_height="45dp"
+            android:layout_width="300dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="45dp"/>
+
+    </FrameLayout>
 
 </org.cyanogenmod.launcher.home.HomeLayout>
