@@ -1,0 +1,30 @@
+<!--
+  Copyright 2012 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+    <string name="permission_desc_read_extension_data">Allows requesting DashClock extension data</string>
+    <string name="permission_label_read_extension_data">Request DashClock extension data</string>
+
+    <!-- Gmail -->
+    <string name="gmail_extension_title">Gmail</string>
+    <string name="gmail_extension_description">
+        Displays an unread count for your Gmail inbox or priority inbox.
+    </string>
+    <string name="title_gmail_settings">Gmail Extension Settings</string>
+    <plurals name="gmail_title_template">
+        <item quantity="other">%1$d unread</item>
+    </plurals>
+</resources>
