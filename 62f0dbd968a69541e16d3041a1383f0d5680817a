@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a061dce_c0b9b4ee",
+        "filename": "src/src/org/cyanogenmod/launcher/home/HomeStub.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 9528
+      },
+      "writtenOn": "2014-07-11T15:44:39Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be modifying an adapter on a bg thread. Maybe return this card and allow the onPostExecute to add this to the adapter.",
+      "revId": "62f0dbd968a69541e16d3041a1383f0d5680817a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
