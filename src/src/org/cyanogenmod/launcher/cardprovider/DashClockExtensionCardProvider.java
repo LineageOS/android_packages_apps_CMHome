@@ -2,6 +2,7 @@ package org.cyanogenmod.launcher.cardprovider;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import org.cyanogenmod.launcher.cards.DashClockExtensionCard;
@@ -9,6 +10,7 @@ import org.cyanogenmod.launcher.dashclock.ExtensionHost;
 import org.cyanogenmod.launcher.dashclock.ExtensionManager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,8 @@ import it.gmariotti.cardslib.library.internal.Card;
  */
 public class DashClockExtensionCardProvider implements ICardProvider, ExtensionManager.OnChangeListener {
     public static final String TAG = "DashClockExtensionCardProvider";
+    public static final String EXTENSION_TIMEOUT_SHARED_PREF_FILE = "DashClockExtensionTimeouts";
+    public static final int CARD_REAPPEAR_TIME_MINUTES = 180; // three hours
 
     private ExtensionManager mExtensionManager;
     private ExtensionHost mExtensionHost;
@@ -62,10 +66,12 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
                 mExtensionManager.getActiveExtensionsWithData()) {
             if(extensionWithData.latestData != null
                && extensionWithData.latestData.visible()
+               && shouldReappear(extensionWithData.listing.componentName.flattenToString())
                && !TextUtils.isEmpty(extensionWithData.latestData.status())) {
-                Card card = new DashClockExtensionCard(mContext,
+                DashClockExtensionCard card = new DashClockExtensionCard(mContext,
                                                        extensionWithData,
                                                        mHostActivityContext);
+                setCardSwipeAndUndoListeners(card);
                 cards.add(card);
             }
         }
@@ -103,7 +109,9 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
                     ExtensionManager.ExtensionWithData extensionWithData
                             = map.get(dashClockExtensionCard
                                       .getFlattenedComponentNameString());
-                    if (extensionWithData.latestData.visible()) {
+                    if (extensionWithData.latestData.visible()
+                        && shouldReappear(extensionWithData.
+                            listing.componentName.flattenToString())) {
                         dashClockExtensionCard
                                 .updateFromExtensionWithData(extensionWithData);
                     } else {
@@ -122,14 +130,36 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
             ExtensionManager.ExtensionWithData extension = entry.getValue();
 
             if(extension.latestData != null && !TextUtils.isEmpty(extension.latestData.status())) {
-                Card card = new DashClockExtensionCard(mContext, extension, mHostActivityContext);
-                if (extension.latestData.visible()) {
+                DashClockExtensionCard card =
+                        new DashClockExtensionCard(mContext, extension, mHostActivityContext);
+                if (extension.latestData.visible()
+                    && shouldReappear(extension.listing.componentName.flattenToString())) {
+                    setCardSwipeAndUndoListeners(card);
                     cardsToAdd.add(card);
                 }
             }
         }
 
         return new CardProviderUpdateResult(cardsToAdd, cardsToRemove);
+    }
+
+    private void setCardSwipeAndUndoListeners(DashClockExtensionCard card) {
+        card.setOnSwipeListener(new Card.OnSwipeListener() {
+            @Override
+            public
+            void onSwipe(Card card) {
+                storeReappearTime(card.getId(),
+                                  getReappearTimeFromNow());
+            }
+        });
+
+        card.setOnUndoSwipeListListener(new Card.OnUndoSwipeListListener() {
+            @Override
+            public
+            void onUndoSwipe(Card card) {
+                clearReappearTime(card.getId());
+            }
+        });
     }
 
     @Override
@@ -156,8 +186,14 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
 
         for(ExtensionManager.ExtensionWithData extension : extensions) {
             if (extension.listing.componentName.flattenToString()
-                    .equals(id) && extension.latestData.visible()) {
-                return new DashClockExtensionCard(mContext, extension, mHostActivityContext);
+                    .equals(id)
+                && extension.latestData.visible()
+                && shouldReappear(extension.listing.componentName.flattenToString())) {
+                DashClockExtensionCard card =
+                        new DashClockExtensionCard(mContext, extension,
+                                                   mHostActivityContext);
+                setCardSwipeAndUndoListeners(card);
+                return card;
             }
         }
 
@@ -192,5 +228,61 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
     @Override
     public void addOnUpdateListener(CardProviderUpdateListener listener) {
         mUpdateListeners.add(listener);
+    }
+
+    /**
+     * Gets the time in the future when a card
+     * should reappear, if it has been dismissed now.
+     * @return The time in millis when the card should be allowed to reappear
+     */
+    private long getReappearTimeFromNow() {
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.MINUTE, CARD_REAPPEAR_TIME_MINUTES);
+        return now.getTimeInMillis();
+    }
+
+    /**
+     * Gets the stored time at which the card should be allowed to reappear.
+     * @param extensionKey The DashClock extension ComponentName String that will be the key
+     * @return The time in millis at which the card can reappear OR zero if no time is stored.
+     */
+    private long getStoredReappearTime(String extensionKey) {
+        SharedPreferences preferences =
+                mHostActivityContext.getSharedPreferences(EXTENSION_TIMEOUT_SHARED_PREF_FILE,
+                                                          Context.MODE_PRIVATE);
+        return preferences.getLong(extensionKey, 0);
+    }
+
+    private void storeReappearTime(String extensionKey, long returnTime) {
+        SharedPreferences preferences =
+                mHostActivityContext.getSharedPreferences(EXTENSION_TIMEOUT_SHARED_PREF_FILE,
+                                                          Context.MODE_PRIVATE);
+        preferences.edit().putLong(extensionKey, returnTime).apply();
+    }
+
+    private void clearReappearTime(String extensionKey) {
+        SharedPreferences preferences =
+                mHostActivityContext.getSharedPreferences(EXTENSION_TIMEOUT_SHARED_PREF_FILE,
+                                                          Context.MODE_PRIVATE);
+        preferences.edit().remove(extensionKey).apply();
+    }
+
+    /**
+     * Checks if the card representing the extensionKey parameter should be allowed to appear.
+     * @param extensionKey The flattened ComponentName String representing an extension.
+     * @return True if the current time is after the stored reappearance time OR
+     *         if there is no stored time for this extension. False if the stored time
+     *         is still in the future.
+     */
+    private boolean shouldReappear(String extensionKey) {
+        Calendar now = Calendar.getInstance();
+        long reappearTime = getStoredReappearTime(extensionKey);
+        boolean shouldReappear = true;
+        if (reappearTime != 0) {
+            Calendar reappear = Calendar.getInstance();
+            reappear.setTimeInMillis(reappearTime);
+            shouldReappear = now.after(reappear);
+        }
+        return shouldReappear;
     }
 }
