@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a061dce_f68759d5",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "Please remove the \"_MINUTES\" or use \"CARD_REAPPEAR_TIME_IN_MINUTES\".",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_1683edcd",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "if (extensionWithData.latestData !\u003d null \u0026\u0026 extensionWithData.latestData.visible()\n        \u0026\u0026 shouldReappear(extensionWithData.listing.componentName.flattenToString())\n        \u0026\u0026 !TextUtils.isEmpty(extensionWithData.latestData.status())) {\n    DashClockExtensionCard card \u003d new DashClockExtensionCard(\n            mContext, extensionWithData, mHostActivityContext);\n    setCardSwipeAndUndoListeners(card);\n    cards.add(card);\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_b67de1e9",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "if (extensionWithData.latestData.visible() \u0026\u0026 shouldReappear(\n        extensionWithData.listing.componentName.flattenToString())) {\n    dashClockExtensionCard.updateFromExtensionWithData(extensionWithData);\n} else {\n    cardsToRemove.add(dashClockExtensionCard);\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_d67855fb",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "if (extension.latestData !\u003d null \u0026\u0026 !TextUtils.isEmpty(extension.latestData.status())) {\n    DashClockExtensionCard card \u003d\n            new DashClockExtensionCard(mContext, extension, mHostActivityContext);\n\n    if (extension.latestData.visible()\n            \u0026\u0026 shouldReappear(extension.listing.componentName.flattenToString())) {\n        setCardSwipeAndUndoListeners(card);\n        cardsToAdd.add(card);\n    }\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_761d09bd",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "private void setCardSwipeAndUndoListeners(DashClockExtensionCard card) {\n    card.setOnSwipeListener(new Card.OnSwipeListener() {\n        @Override\n        public void onSwipe(Card card) {\n            storeReappearTime(card.getId(), getReappearTimeFromNow());\n        }\n    });\n\n    card.setOnUndoSwipeListListener(new Card.OnUndoSwipeListListener() {\n        @Override\n        public void onUndoSwipe(Card card) {\n            clearReappearTime(card.getId());\n        }\n    });\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_96209df9",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "for (ExtensionManager.ExtensionWithData extension : extensions) {\n    if (extension.listing.componentName.flattenToString().equals(id)\n            \u0026\u0026 extension.latestData.visible()\n            \u0026\u0026 shouldReappear(extension.listing.componentName.flattenToString())) {\n        DashClockExtensionCard card \u003d new DashClockExtensionCard(\n                mContext, extension, mHostActivityContext);\n        setCardSwipeAndUndoListeners(card);\n        return card;\n    }\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_f610f9aa",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "private long getStoredReappearTime(String extensionKey) {\n    SharedPreferences preferences \u003d mHostActivityContext.getSharedPreferences(\n            EXTENSION_TIMEOUT_SHARED_PREF_FILE, Context.MODE_PRIVATE);\n    return preferences.getLong(extensionKey, 0);\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_56260517",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "private void storeReappearTime(String extensionKey, long returnTime) {\n    SharedPreferences preferences \u003d mHostActivityContext.getSharedPreferences(\n            EXTENSION_TIMEOUT_SHARED_PREF_FILE, Context.MODE_PRIVATE);\n    preferences.edit().putLong(extensionKey, returnTime).apply();\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_36239107",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 4884
+      },
+      "writtenOn": "2014-07-17T18:13:07Z",
+      "side": 1,
+      "message": "private void clearReappearTime(String extensionKey) {\n    SharedPreferences preferences \u003d mHostActivityContext.getSharedPreferences(\n            EXTENSION_TIMEOUT_SHARED_PREF_FILE, Context.MODE_PRIVATE);\n    preferences.edit().remove(extensionKey).apply();\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
