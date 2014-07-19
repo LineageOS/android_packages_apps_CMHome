@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a061dce_0f5d90e9",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 9621
+      },
+      "writtenOn": "2014-07-19T13:11:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a061dce_f68759d5",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a061dce_1683edcd",
         "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
         "patchSetId": 1
@@ -98,6 +116,24 @@
       "writtenOn": "2014-07-17T18:13:07Z",
       "side": 1,
       "message": "for (ExtensionManager.ExtensionWithData extension : extensions) {\n    if (extension.listing.componentName.flattenToString().equals(id)\n            \u0026\u0026 extension.latestData.visible()\n            \u0026\u0026 shouldReappear(extension.listing.componentName.flattenToString())) {\n        DashClockExtensionCard card \u003d new DashClockExtensionCard(\n                mContext, extension, mHostActivityContext);\n        setCardSwipeAndUndoListeners(card);\n        return card;\n    }\n}",
+      "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_6f724c7e",
+        "filename": "src/src/org/cyanogenmod/launcher/cardprovider/DashClockExtensionCardProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 9621
+      },
+      "writtenOn": "2014-07-19T13:11:35Z",
+      "side": 1,
+      "message": "https://google-styleguide.googlecode.com/svn/trunk/javaguide.html#s4.5.1-line-wrapping-where-to-break\n\n\"When a line is broken at a non-assignment operator the break comes before the symbol.\"\n\nI\u0027m intending to line up the \u0026\u0026, I will keep the original formatting.",
+      "parentUuid": "9a061dce_96209df9",
       "revId": "8aab0ac6443f0082dba9c3622db3f826d5d7c034",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
