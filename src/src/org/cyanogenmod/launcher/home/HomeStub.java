@@ -97,6 +97,9 @@ public class HomeStub implements Home {
             mCardProviders.clear();
             if(mHomeLayout != null) {
                 removeAllCards(context);
+                // Make sure that the Undo Bar is hidden if no content is to be shown.
+                View undoLayout = mHomeLayout.findViewById(R.id.list_card_undobar);
+                undoLayout.setVisibility(View.GONE);
             }
         }
     }
@@ -124,6 +127,10 @@ public class HomeStub implements Home {
                     cardProvider.onShow();
                     cardProvider.requestRefresh();
                 }
+            } else {
+                // Make sure that the Undo Bar is hidden if no content is to be shown.
+                View undoLayout = mHomeLayout.findViewById(R.id.list_card_undobar);
+                undoLayout.setVisibility(View.GONE);
             }
         }
     }
