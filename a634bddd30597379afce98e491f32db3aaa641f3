@@ -34,6 +34,24 @@
       "revId": "a634bddd30597379afce98e491f32db3aaa641f3",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_9d31d1ef",
+        "filename": "src/res/values/strings.xml",
+        "patchSetId": 18
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 9621
+      },
+      "writtenOn": "2014-07-25T07:42:14Z",
+      "side": 1,
+      "message": "Thanks for testing guys. I have fixed this in http://review.cyanogenmod.org/#/c/68971/, please check it out if you have time.",
+      "parentUuid": "9a061dce_9226e014",
+      "revId": "a634bddd30597379afce98e491f32db3aaa641f3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
