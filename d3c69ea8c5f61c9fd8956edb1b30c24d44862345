@@ -16,6 +16,24 @@
       "revId": "d3c69ea8c5f61c9fd8956edb1b30c24d44862345",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a061dce_5df57981",
+        "filename": "src/src/org/cyanogenmod/launcher/home/HomeStub.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 9621
+      },
+      "writtenOn": "2014-07-25T09:36:54Z",
+      "side": 1,
+      "message": "You\u0027re right....... fixed in PS 2.",
+      "parentUuid": "9a061dce_5dce195b",
+      "revId": "d3c69ea8c5f61c9fd8956edb1b30c24d44862345",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
