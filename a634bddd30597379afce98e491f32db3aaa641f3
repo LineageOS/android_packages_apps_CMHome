@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a061dce_520c4894",
+        "filename": "src/res/values/strings.xml",
+        "patchSetId": 18
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 2881
+      },
+      "writtenOn": "2014-07-25T00:29:31Z",
+      "side": 1,
+      "message": "This strings is too long on HDPI and gets cuf off\n\nhttps://www.dropbox.com/s/mplnxjgrlffdblj/Screenshot_2014-07-24-14-26-42.png",
+      "revId": "a634bddd30597379afce98e491f32db3aaa641f3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
