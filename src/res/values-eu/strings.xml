@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Home</string>
-  <string name="permission_desc_read_extension_data">DashClock hedapenek datuak eskatzea baimendu</string>
-  <string name="permission_label_read_extension_data">DashClock hedapenen datuak eskatu</string>
   <string name="dashclock_activity_not_found_toast_message">Hedapen honentzako aurrezarritako ekintza ez da aurkitu. Informazio gehiagorako garatzaileekin kontaktuan jarri, mesedez.</string>
   <string name="dashclock_card_expand_action">Ekintza</string>
   <string name="dashclock_card_expand_settings">Ezarpenak</string>

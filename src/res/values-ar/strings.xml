@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">منزل CM</string>
-  <string name="permission_desc_read_extension_data">يسمح بطلب بيانات ملحق DashClock</string>
-  <string name="permission_label_read_extension_data">طلب بيانات ملحق DashClock</string>
   <string name="dashclock_activity_not_found_toast_message">لم يتم العثور على النشاط المقصود لهذا الملحق. لمزيد من المعلومات، يرجى الاتصال المطور.</string>
   <string name="dashclock_card_expand_action">النشاط</string>
   <string name="dashclock_card_expand_settings">إعدادات</string>

@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM 桌面</string>
-  <string name="permission_desc_read_extension_data">允许读取 DashClock 扩展数据</string>
-  <string name="permission_label_read_extension_data">读取 DashClock 扩展数据</string>
   <string name="dashclock_activity_not_found_toast_message">当前扩展的活动行为没有激活，请联系开发人员获得更多信息。</string>
   <string name="dashclock_card_expand_action">动作</string>
   <string name="dashclock_card_expand_settings">设置</string>

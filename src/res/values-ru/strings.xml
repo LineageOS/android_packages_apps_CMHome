@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">Домашний экран CyanogenMod</string>
-  <string name="permission_desc_read_extension_data">Приложение сможет запрашивать данные расширений DashClock.</string>
-  <string name="permission_label_read_extension_data">Запрос данных расширений DashClock</string>
   <string name="dashclock_activity_not_found_toast_message">Действие для этого расширения не найдено. Свяжитесь с разработчиками расширения для дополнительных сведений.</string>
   <string name="dashclock_card_expand_action">Действия</string>
   <string name="dashclock_card_expand_settings">Настройки</string>

@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM hjem</string>
-  <string name="permission_desc_read_extension_data">Tillater DashClock å be om utvidelsesdata</string>
-  <string name="permission_label_read_extension_data">Be om DashClock utvidelsesdata</string>
   <string name="dashclock_activity_not_found_toast_message">Utvidelsen til denne aktiviteten ble ikke funnet. Kontakt utvikler for å få mer informasjon.</string>
   <string name="dashclock_card_expand_action">Handling</string>
   <string name="dashclock_card_expand_settings">Innstillinger</string>

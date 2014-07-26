@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">ماڵه‌وه‌ی ساینه‌جینمۆد</string>
-  <string name="permission_desc_read_extension_data">ڕێگەبە بۆ داواکردنی دراوەی پاشکۆی کاژێری سەر ڕوونما</string>
-  <string name="permission_label_read_extension_data">داواکردنی دراوەی پاشکۆی کاژێری سەر ڕوونما</string>
   <string name="dashclock_activity_not_found_toast_message">چالاکی ویستراو بۆ ئەم چالاکییە نەدۆزراوە. تکایە بۆ زانیاری زیاتر پەیوەندی بە گەشەپێدەرەوە بکە.</string>
   <string name="dashclock_card_expand_action">چالاکی</string>
   <string name="dashclock_card_expand_settings">ڕێکخستنه‌کان</string>

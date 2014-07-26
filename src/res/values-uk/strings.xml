@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">Домівка CM</string>
-  <string name="permission_desc_read_extension_data">Дозволяє запитувати дані розширення DashClock</string>
-  <string name="permission_label_read_extension_data">Запитувати дані розширення DashClock</string>
   <string name="dashclock_activity_not_found_toast_message">Не знайдено Activity цього розширення. Будь ласка, зв’яжіться з розробниками аби отримати детальну інформацію.</string>
   <string name="dashclock_card_expand_action">Дія</string>
   <string name="dashclock_card_expand_settings">Налаштування</string>

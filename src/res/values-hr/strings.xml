@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Dom</string>
-  <string name="permission_desc_read_extension_data">Dopušta traženje podataka za DashClock proširenja</string>
-  <string name="permission_label_read_extension_data">Traženje podataka DashClockovih proširenja</string>
   <string name="dashclock_activity_not_found_toast_message">Namjenjena aktivnost za ovo proširenje nije pronađena. Za više informacija obratite se programeru.</string>
   <string name="dashclock_card_expand_action">Radnja</string>
   <string name="dashclock_card_expand_settings">Postavke</string>

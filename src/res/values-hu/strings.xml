@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Kezdőlap</string>
-  <string name="permission_desc_read_extension_data">Lehetővé teszi a DashClock bővítmény számára az adat-hozzáférési kérelmet</string>
-  <string name="permission_label_read_extension_data">A DashClock adathozzáférést kér a bővítmény számára</string>
   <string name="dashclock_activity_not_found_toast_message">Nem található bővítmény ehhez a tervezett tevékenységhez. További információkért  lépjen kapcsolatba a fejlesztővel.</string>
   <string name="dashclock_card_expand_action">Tevékenység</string>
   <string name="dashclock_card_expand_settings">Beállítások</string>

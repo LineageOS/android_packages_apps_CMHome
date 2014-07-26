@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Tuis</string>
-  <string name="permission_desc_read_extension_data">Laat toegang tot byvoegsels vir DashClock se data toe</string>
-  <string name="permission_label_read_extension_data">Vra byvoegsel vir DashClock data aan</string>
   <string name="dashclock_activity_not_found_toast_message">Die beoogde aktiwiteit vir hierdie byvoegsel kon nie gevind word nie. Kontak asseblief die ontwikkelaar vir meer inligting.</string>
   <string name="dashclock_card_expand_action">Aksie</string>
   <string name="dashclock_card_expand_settings">Instellings</string>

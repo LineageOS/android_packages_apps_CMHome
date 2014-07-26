@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">Domov CM</string>
-  <string name="permission_desc_read_extension_data">Umožňuje požadovanie údajov DashClock rozšírení</string>
-  <string name="permission_label_read_extension_data">Požadovať údaje DashClock rozšírení</string>
   <string name="dashclock_activity_not_found_toast_message">Plánovaná aktivita pre toto rozšírenie nebola nájdená. Prosím, obráťte sa na vývojára pre viac informácií.</string>
   <string name="dashclock_card_expand_action">Akcia</string>
   <string name="dashclock_card_expand_settings">Nastavenia</string>

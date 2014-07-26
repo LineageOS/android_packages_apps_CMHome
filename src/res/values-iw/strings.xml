@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Home</string>
-  <string name="permission_desc_read_extension_data">אפשר בקשה לקבלת מידע על הרחבת DashClock</string>
-  <string name="permission_label_read_extension_data">בקשת מידע על הרחבת DashClock</string>
   <string name="dashclock_activity_not_found_toast_message">החלון המכוון להרחבה זו לא נמצא. אנה פנה למפתח למידע נוסף.</string>
   <string name="dashclock_card_expand_action">פעולה</string>
   <string name="dashclock_card_expand_settings">הגדרות</string>

@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM pagrindinis</string>
-  <string name="permission_desc_read_extension_data">Leidžia prašyti „DashClock“ papildomų duomenų</string>
-  <string name="permission_label_read_extension_data">Prašyti „DashClock“ papildomų duomenų</string>
   <string name="dashclock_activity_not_found_toast_message">Numatomos veiklos dėl šio papildinio nebuvo rasta. Prašome susisiekti su kūrėju dėl daugiau informacijos.</string>
   <string name="dashclock_card_expand_action">Veiksmai</string>
   <string name="dashclock_card_expand_settings">Nustatymai</string>

@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Koti</string>
-  <string name="permission_desc_read_extension_data">Sallii DashClock-laajennuksen tietojen pyynnöt</string>
-  <string name="permission_label_read_extension_data">Pyydä DashClock-laajennuksen tiedot</string>
   <string name="dashclock_activity_not_found_toast_message">Aiottua toimintaa tälle laajennukselle ei löydy. Pyydä lisätietoja kehittäjältä.</string>
   <string name="dashclock_card_expand_action">Tehtävä</string>
   <string name="dashclock_card_expand_settings">Asetukset</string>

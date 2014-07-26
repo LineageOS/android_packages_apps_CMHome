@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Почетна</string>
-  <string name="permission_desc_read_extension_data">Омогућава захтевање података DashClock додатка</string>
-  <string name="permission_label_read_extension_data">Захтев података DashClock додатка</string>
   <string name="dashclock_activity_not_found_toast_message">Намењена активност за овај додатак није пронађена. Обрати се програмеру за више информација.</string>
   <string name="dashclock_card_expand_action">Акција</string>
   <string name="dashclock_card_expand_settings">Подешавања</string>

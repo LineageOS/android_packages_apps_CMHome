@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Home</string>
-  <string name="permission_desc_read_extension_data">DashClock eklenti verisini istemeyi etkinleştirir</string>
-  <string name="permission_label_read_extension_data">DashClock eklenti verisini iste</string>
   <string name="dashclock_activity_not_found_toast_message">Bu eklenti için belirli bir Etkinlik bulunamadı. Lütfen daha fazla bilgi için uygulama geliştiricisine başvurun.</string>
   <string name="dashclock_card_expand_action">Eylem</string>
   <string name="dashclock_card_expand_settings">Ayarlar</string>

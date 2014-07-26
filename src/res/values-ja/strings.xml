@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CMホーム</string>
-  <string name="permission_desc_read_extension_data">DashClockエクステンションデータのリクエストを許可します</string>
-  <string name="permission_label_read_extension_data">DashClockエクステンションデータのリクエスト</string>
   <string name="dashclock_activity_not_found_toast_message">このエクステンションの目的のアクティビティが見つかりませんでした。詳細については開発者に問い合わせてください。</string>
   <string name="dashclock_card_expand_action">アクション</string>
   <string name="dashclock_card_expand_settings">設定</string>

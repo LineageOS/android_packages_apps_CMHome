@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM 홈</string>
-  <string name="permission_desc_read_extension_data">DashClock의 확장 프로그램 데이터를 요청할 수 있도록 허용</string>
-  <string name="permission_label_read_extension_data">DashClock 확장 프로그램 데이터 요청</string>
   <string name="dashclock_activity_not_found_toast_message">이 확장 프로그램의 대상 액티비티를 찾을 수 없습니다. 자세한 정보는 개발자에게 문의해주십시오.</string>
   <string name="dashclock_card_expand_action">동작</string>
   <string name="dashclock_card_expand_settings">설정</string>

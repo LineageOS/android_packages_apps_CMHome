@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM නිවස</string>
-  <string name="permission_desc_read_extension_data">DashClock දිගුවේ දත්ත ඉල්ලුම් කිරීම අනුමත කරන්න</string>
-  <string name="permission_label_read_extension_data">DashClock දිගුවේ දත්ත ඉල්ලුම් කරන්න</string>
   <string name="dashclock_activity_not_found_toast_message">මෙම දිගුව මගින් බලාපොරොත්තු වූ ක්‍රියාව සොයාගත නොහැක. වැඩිදුර තොරතුරු සඳහා කරුණාකර වර්ධක සම්බන්ධ කරගන්න.</string>
   <string name="dashclock_card_expand_action">ක්‍රියාව</string>
   <string name="dashclock_card_expand_settings">සැකසීම්</string>

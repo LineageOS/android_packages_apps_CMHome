@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">Aniciu CM</string>
-  <string name="permission_desc_read_extension_data">Permitir que les estensiones de DaskClock soliciten datos</string>
-  <string name="permission_label_read_extension_data">Solicitar datos d\'estensiones de DashClock</string>
   <string name="dashclock_activity_not_found_toast_message">Nun s\'atopó la xera prevista pa este estensión. Pa más información contauta col desendolcador.</string>
   <string name="dashclock_card_expand_action">Aición</string>
   <string name="dashclock_card_expand_settings">Axustes</string>

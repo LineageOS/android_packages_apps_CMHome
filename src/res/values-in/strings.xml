@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Home</string>
-  <string name="permission_desc_read_extension_data">Izinkan meminta data dari ekstensi DashClock</string>
-  <string name="permission_label_read_extension_data">Meminta ekstensi data DashClock</string>
   <string name="dashclock_activity_not_found_toast_message">Kegiatan yang ditujukan untuk ekstensi ini tidak ditemukan. Silahkan hubungi pengembang untuk info lebih lanjut.</string>
   <string name="dashclock_card_expand_action">Tindakan</string>
   <string name="dashclock_card_expand_settings">Pengaturan</string>

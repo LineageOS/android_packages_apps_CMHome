@@ -17,8 +17,6 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
   <string name="app_name">CM Plocha</string>
-  <string name="permission_desc_read_extension_data">Umožnit vyžádat data rozšíření DashClock</string>
-  <string name="permission_label_read_extension_data">Vyžádat data rozšíření DashClock</string>
   <string name="dashclock_activity_not_found_toast_message">Nebyla nalezena požadovaná aktivita tohoto rozšíření. Pro více informací prosím kontaktujte vývojáře.</string>
   <string name="dashclock_card_expand_action">Akce</string>
   <string name="dashclock_card_expand_settings">Nastavení</string>
