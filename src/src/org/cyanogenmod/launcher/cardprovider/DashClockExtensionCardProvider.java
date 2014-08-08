@@ -146,8 +146,7 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
     private void setCardSwipeAndUndoListeners(DashClockExtensionCard card) {
         card.setOnSwipeListener(new Card.OnSwipeListener() {
             @Override
-            public
-            void onSwipe(Card card) {
+            public void onSwipe(Card card) {
                 storeReappearTime(card.getId(),
                                   getReappearTimeFromNow());
             }
@@ -155,9 +154,10 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
 
         card.setOnUndoSwipeListListener(new Card.OnUndoSwipeListListener() {
             @Override
-            public
-            void onUndoSwipe(Card card) {
-                clearReappearTime(card.getId());
+            public void onUndoSwipe(Card card, boolean timedOut) {
+                if (!timedOut) {
+                    clearReappearTime(card.getId());
+                }
             }
         });
     }
