@@ -24,6 +24,7 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.android.launcher.home.Home;
 
+import it.gmariotti.cardslib.library.view.listener.dismiss.DefaultDismissableManager;
 import org.cyanogenmod.launcher.cardprovider.DashClockExtensionCardProvider;
 import org.cyanogenmod.launcher.cardprovider.ICardProvider;
 import org.cyanogenmod.launcher.cardprovider.ICardProvider.CardProviderUpdateResult;
@@ -36,7 +37,6 @@ import java.util.List;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
-import it.gmariotti.cardslib.library.view.listener.SwipeDismissListViewTouchListener;
 
 public class HomeStub implements Home {
 
@@ -351,8 +351,7 @@ public class HomeStub implements Home {
             if(cardListView != null) {
                 mCardArrayAdapter = new CMHomeCardArrayAdapter(mContext, cards);
                 mCardArrayAdapter.setEnableUndo(true, mHomeLayout);
-                mCardArrayAdapter.
-                        setSwipeDirection(SwipeDismissListViewTouchListener.SwipeDirection.RIGHT);
+                mCardArrayAdapter.setDismissable(new RightDismissableManager());
                 cardListView.setAdapter(mCardArrayAdapter);
             }
         }
@@ -451,6 +450,16 @@ public class HomeStub implements Home {
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * A DismissableManager implementation that only allows cards to be swiped to the right.
+     */
+    private class RightDismissableManager extends DefaultDismissableManager {
+        @Override
+        public SwipeDirection getSwipeDirectionAllowed() {
+            return SwipeDirection.RIGHT;
         }
     }
 }
