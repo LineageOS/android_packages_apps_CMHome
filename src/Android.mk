@@ -20,13 +20,16 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
 LOCAL_STATIC_JAVA_LIBRARIES := org.cyanogenmod.launcher.home \
+            CMHomeSDK \
 			dashclockapiv2 \
             android-support-v13
 
-library_src_files += ../../../../external/cardslib/library/src/main/java
+library_src_files += ../../../../external/cardslib/library/src/main/java \
+                     ../../../../external/cyanogen/cmhomeapi/src/main/java
 LOCAL_SRC_FILES += $(call all-java-files-under, $(library_src_files))
 LOCAL_RESOURCE_DIR += $(LOCAL_PATH)/res \
-	$(LOCAL_PATH)/../../../../external/cardslib/library/src/main/res
+	$(LOCAL_PATH)/../../../../external/cardslib/library/src/main/res \
+    $(LOCAL_PATH)/../../../../external/cyanogen/cmhomeapi/src/main/res
 
 LOCAL_PACKAGE_NAME := CMHome
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
@@ -35,8 +38,6 @@ LOCAL_AAPT_FLAGS := \
 	--extra-packages it.gmariotti.cardslib.library \
 
 include $(BUILD_PACKAGE)
-
-include $(call all-makefiles-under,$(LOCAL_PATH))
 
 include $(CLEAR_VARS)
 
