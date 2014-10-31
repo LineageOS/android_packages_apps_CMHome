@@ -17,31 +17,33 @@
 package org.cyanogenmod.launcher.home;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-
 import com.android.launcher.home.Home;
-
-import it.gmariotti.cardslib.library.view.listener.dismiss.DefaultDismissableManager;
-import org.cyanogenmod.launcher.cardprovider.DashClockExtensionCardProvider;
-import org.cyanogenmod.launcher.cardprovider.ICardProvider;
-import org.cyanogenmod.launcher.cardprovider.ICardProvider.CardProviderUpdateResult;
-import org.cyanogenmod.launcher.cards.SimpleMessageCard;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
+import it.gmariotti.cardslib.library.view.listener.dismiss.DefaultDismissableManager;
+import org.cyanogenmod.launcher.cardprovider.CmHomeApiCardProvider;
+import org.cyanogenmod.launcher.cardprovider.DashClockExtensionCardProvider;
+import org.cyanogenmod.launcher.cardprovider.ICardProvider;
+import org.cyanogenmod.launcher.cardprovider.ICardProvider.CardProviderUpdateResult;
+import org.cyanogenmod.launcher.cards.CmCard;
+import org.cyanogenmod.launcher.cards.SimpleMessageCard;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeStub implements Home {
 
     private static final String TAG = "HomeStub";
     private static final String NO_EXTENSIONS_CARD_ID = "noExtensions";
+    private static final String BACKGROUND_THREAD_NAME = "CMHomeBackgroundThread";
     private HomeLayout mHomeLayout;
     private Context mHostActivityContext;
     private Context mCMHomeContext;
@@ -50,17 +52,31 @@ public class HomeStub implements Home {
     private List<ICardProvider> mCardProviders = new ArrayList<ICardProvider>();
     private CMHomeCardArrayAdapter mCardArrayAdapter;
 
-    private HashMap<String, AsyncTask> mUpdateTasks = new HashMap<String, AsyncTask>();
+    private HandlerThread mBackgroundHandlerThread;
+    private Handler mBackgroundHandler;
+    private Handler mUiThreadHandler;
 
     private final AccelerateInterpolator mAlphaInterpolator;
 
     private final ICardProvider.CardProviderUpdateListener mCardProviderUpdateListener =
             new ICardProvider.CardProviderUpdateListener() {
                 @Override
-                public void onCardProviderUpdate(String cardId) {
-                    refreshCard(cardId);
+                public boolean onCardProviderUpdate(String cardId, boolean wasPending) {
+                    return refreshCard(cardId);
+                }
+
+                @Override
+                public void onCardDelete(String cardId) {
+
                 }
             };
+
+    private final Runnable mLoadAllCardsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            loadAllCards();
+        }
+    };
 
     public HomeStub() {
         super();
@@ -70,11 +86,18 @@ public class HomeStub implements Home {
     @Override
     public void setHostActivityContext(Context context) {
         mHostActivityContext = context;
+        mUiThreadHandler = new Handler(mHostActivityContext.getMainLooper());
     }
 
     @Override
     public void onStart(Context context) {
         mCMHomeContext = context;
+
+        // Start up a background thread to handle updating.
+        mBackgroundHandlerThread = new HandlerThread(BACKGROUND_THREAD_NAME);
+        mBackgroundHandlerThread.start();
+        mBackgroundHandler = new Handler(mBackgroundHandlerThread.getLooper());
+
         if(mShowContent) {
             // Add any providers we wish to include, if we should show content
             initProvidersIfNeeded(context);
@@ -88,7 +111,7 @@ public class HomeStub implements Home {
             // Add any providers we wish to include, if we should show content
             initProvidersIfNeeded(context);
             if(mHomeLayout != null) {
-                loadCardsFromProviders(context);
+                loadCardsFromProviders();
             }
         } else {
             for(ICardProvider cardProvider : mCardProviders) {
@@ -196,6 +219,8 @@ public class HomeStub implements Home {
     public void initProvidersIfNeeded(Context context) {
         if (mCardProviders.size() == 0) {
             mCardProviders.add(new DashClockExtensionCardProvider(context, mHostActivityContext));
+            mCardProviders.add(new CmHomeApiCardProvider(context, mHostActivityContext,
+                                                         mBackgroundHandler));
 
             for (ICardProvider cardProvider : mCardProviders) {
                 cardProvider.addOnUpdateListener(mCardProviderUpdateListener);
@@ -207,14 +232,14 @@ public class HomeStub implements Home {
      * Gets a list of all cards provided by each provider,
      * and updates the UI to show them.
      */
-    private void loadCardsFromProviders(Context context) {
+    private void loadCardsFromProviders() {
         // If cards have been initialized already, just update them
         if(mCardArrayAdapter != null
            && mCardArrayAdapter.getCards().size() > 0
            && mHomeLayout != null) {
-            refreshCards(true);
+            mBackgroundHandler.post(new RefreshAllCardsRunnable(true));
         } else {
-            new LoadAllCardsTask(context).execute();
+            mBackgroundHandler.post(mLoadAllCardsRunnable);
         }
     }
 
@@ -233,28 +258,50 @@ public class HomeStub implements Home {
         return mNoExtensionsCard;
     }
 
-    /**
-     * Refresh all cards by asking the providers to update them.
-     * @param addNew If providers have new cards that have not
-     * been displayed yet, should they be added?
-     */
-    public void refreshCards(boolean addNew) {
-        new RefreshAllCardsTask(addNew).execute();
-    }
+    public boolean refreshCard(String cardId) {
+        boolean cardIsNew = false;
+        if (mCardArrayAdapter != null) {
+            CmCard card = mCardArrayAdapter.getCardWithId(cardId);
 
-    public void refreshCard(String cardId) {
-        AsyncTask mTask = mUpdateTasks.get(cardId);
-        // Nothing to refresh if the card adapter hasn't been
-        // initialized yet or the ID we've been given is null.
-        if (cardId != null && mCardArrayAdapter != null) {
-            if (mTask != null) {
-                mTask.cancel(true);
+            // The card already exists in the list
+            if (card != null) {
+                // Allow each provider to update the card (if necessary)
+                for (ICardProvider cardProvider : mCardProviders) {
+                    cardProvider.updateCard(card);
+                }
+            } else {
+                // The card is brand new, add it
+                CmCard newCard = null;
+                for (ICardProvider cardProvider : mCardProviders) {
+                    newCard = cardProvider.createCardForId(cardId);
+                    if (newCard != null) break;
+                }
+
+                if (newCard != null) {
+                    card = newCard;
+                    cardIsNew = true;
+                }
             }
-            AsyncTask<Void, Void, Card> newTask =
-                    new LoadSingleCardTask(cardId, mCMHomeContext);
-            mUpdateTasks.put(cardId, newTask);
-            newTask.execute();
+
+            final boolean runnableCardIsNew = cardIsNew;
+            final CmCard runnableCard = card;
+            mUiThreadHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (runnableCard != null) {
+                        if (runnableCardIsNew) {
+                            mCardArrayAdapter.add(runnableCard);
+                            // Remove the "no cards" card, if it's there.
+                            mCardArrayAdapter.remove(getNoExtensionsCard(mCMHomeContext));
+                            mCardArrayAdapter.notifyDataSetChanged();
+                        } else {
+                            mCardArrayAdapter.updateCardViewIfVisible(runnableCard);
+                        }
+                    }
+                }
+            });
         }
+        return cardIsNew;
     }
 
     private void removeAllCards(Context context) {
@@ -265,146 +312,83 @@ public class HomeStub implements Home {
         cardListView.setAdapter(mCardArrayAdapter);
     }
 
-    private class LoadSingleCardTask extends AsyncTask<Void, Void, Card> {
-        private String mId;
-        private Context mContext;
-        private boolean mIsCardNew = false;
-
-        public LoadSingleCardTask(String id, Context context) {
-            mId = id;
-            mContext = context;
+    private void loadAllCards() {
+        final List<Card> cards = new ArrayList<Card>();
+        for (ICardProvider provider : mCardProviders) {
+            for (Card card : provider.getCards()) {
+                cards.add(card);
+            }
         }
 
-        @Override
-        protected Card doInBackground(Void... voids) {
-            Card card = mCardArrayAdapter.getCardWithId(mId);
+        // If there aren't any cards, show the user a message about how to fix that!
+        if (cards.size() == 0) {
+            cards.add(getNoExtensionsCard(mCMHomeContext));
+        }
 
-            // The card already exists in the list
-            if (card != null) {
-                // Allow each provider to update the card (if necessary)
-                for (ICardProvider cardProvider : mCardProviders) {
-                    cardProvider.updateCard(card);
-                }
-            } else {
-                // The card is brand new, add it
-                Card newCard = null;
-                for (ICardProvider cardProvider : mCardProviders) {
-                    newCard = cardProvider.createCardForId(mId);
-                    if (newCard != null) break;
-                }
+        mUiThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                CardListView cardListView =
+                            (CardListView) mHomeLayout.findViewById(R.id.cm_home_cards_list);
 
-                if (newCard != null) {
-                    card = newCard;
-                    mIsCardNew = true;
+                if(cardListView != null) {
+                    mCardArrayAdapter = new CMHomeCardArrayAdapter(mCMHomeContext, cards);
+                    mCardArrayAdapter.setEnableUndo(true, mHomeLayout);
+                    mCardArrayAdapter.setDismissable(new RightDismissableManager());
+                    cardListView.setAdapter(mCardArrayAdapter);
                 }
             }
-            return card;
-        }
-
-        @Override
-        protected void onPostExecute(Card card) {
-            super.onPostExecute(card);
-
-            if (card != null) {
-                if (mIsCardNew) {
-                    mCardArrayAdapter.add(card);
-                    // Remove the "no cards" card, if it's there.
-                    mCardArrayAdapter.remove(getNoExtensionsCard(mContext));
-                    mCardArrayAdapter.notifyDataSetChanged();
-                } else {
-                    mCardArrayAdapter.updateCardViewIfVisible(card);
-                }
-            }
-            mUpdateTasks.remove(mId);
-        }
+        });
     }
 
-    private class LoadAllCardsTask extends AsyncTask<Void, Void, List<Card>> {
-        private Context mContext;
+    /**
+     * Refresh all cards by asking the providers to update them.
+     * @param addNew If providers have new cards that have not
+     * been displayed yet, should they be added?
+     */
+    private void refreshCards(final boolean addNew) {
+        boolean noExtensionsCardExists;
+        List<CmCard> originalCards = mCardArrayAdapter.getCards();
+        int finalCardCount = 0;
 
-        public LoadAllCardsTask(Context context) {
-            mContext = context;
+        final CardProviderUpdateResult updateResult =
+                    new CardProviderUpdateResult(new ArrayList<CmCard>(),
+                                                 new ArrayList<CmCard>());
+        // Allow each provider to update it's cards
+        for (ICardProvider cardProvider : mCardProviders) {
+            CardProviderUpdateResult tempResult;
+            tempResult = cardProvider.updateAndAddCards(originalCards);
+            updateResult.getCardsToAdd().addAll(tempResult.getCardsToAdd());
+            updateResult.getCardsToRemove().addAll(tempResult.getCardsToRemove());
         }
 
-        @Override
-        protected List<Card> doInBackground(Void... voids) {
-            List<Card> cards = new ArrayList<Card>();
-            for (ICardProvider provider : mCardProviders) {
-                for (Card card : provider.getCards()) {
-                    cards.add(card);
+        noExtensionsCardExists = originalCards.contains(mNoExtensionsCard);
+
+        if (updateResult != null) {
+            finalCardCount += updateResult.getCardsToAdd().size();
+            finalCardCount -= updateResult.getCardsToRemove().size();
+        }
+
+        final boolean runnableNoExtensionCard = noExtensionsCardExists;
+        final int runnableFinalCardCount = finalCardCount;
+        mUiThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (updateResult != null) {
+                    if (addNew) {
+                        mCardArrayAdapter.addAll(updateResult.getCardsToAdd());
+                    }
+                    for (Card card : updateResult.getCardsToRemove()) {
+                        mCardArrayAdapter.remove(card);
+                    }
+                }
+
+                if (runnableNoExtensionCard && runnableFinalCardCount > 1) {
+                    mCardArrayAdapter.remove(mNoExtensionsCard);
                 }
             }
+        });
 
-            // If there aren't any cards, show the user a message about how to fix that!
-            if (cards.size() == 0) {
-                cards.add(getNoExtensionsCard(mContext));
-            }
-            return cards;
-        }
-
-        @Override
-        protected void onPostExecute(List<Card> cards) {
-            super.onPostExecute(cards);
-            CardListView cardListView =
-                    (CardListView) mHomeLayout.findViewById(R.id.cm_home_cards_list);
-
-            if(cardListView != null) {
-                mCardArrayAdapter = new CMHomeCardArrayAdapter(mContext, cards);
-                mCardArrayAdapter.setEnableUndo(true, mHomeLayout);
-                mCardArrayAdapter.setDismissable(new RightDismissableManager());
-                cardListView.setAdapter(mCardArrayAdapter);
-            }
-        }
-    }
-
-    private class RefreshAllCardsTask extends AsyncTask<Void, Void, CardProviderUpdateResult> {
-        private boolean mAddNew = false;
-        private int mFinalCardCount = 0;
-        private boolean mNoExtensionsCardExists = false;
-
-        public RefreshAllCardsTask(boolean addNew) {
-            mAddNew = addNew;
-        }
-
-        @Override
-        protected CardProviderUpdateResult doInBackground(Void... voids) {
-            List<Card> originalCards = mCardArrayAdapter.getCards();
-
-            CardProviderUpdateResult updateResult = null;
-            // Allow each provider to update it's cards
-            for (ICardProvider cardProvider : mCardProviders) {
-                updateResult = cardProvider.updateAndAddCards(originalCards);
-            }
-
-            mNoExtensionsCardExists = originalCards.contains(mNoExtensionsCard);
-            mFinalCardCount = originalCards.size();
-
-            if (updateResult != null) {
-                mFinalCardCount += updateResult.getCardsToAdd().size();
-                mFinalCardCount -= updateResult.getCardsToRemove().size();
-            }
-            return updateResult;
-        }
-
-        @Override
-        protected void onPostExecute(CardProviderUpdateResult updateResult) {
-            super.onPostExecute(updateResult);
-
-            if (updateResult != null) {
-                if (mAddNew) {
-                    mCardArrayAdapter.addAll(updateResult.getCardsToAdd());
-                }
-                for (Card card : updateResult.getCardsToRemove()) {
-                    mCardArrayAdapter.remove(card);
-                }
-            }
-
-            if (mNoExtensionsCardExists && mFinalCardCount > 1) {
-                mCardArrayAdapter.remove(mNoExtensionsCard);
-            }
-
-            mCardArrayAdapter.notifyDataSetChanged();
-        }
     }
 
     public class CMHomeCardArrayAdapter extends CardArrayAdapter {
@@ -413,18 +397,18 @@ public class HomeStub implements Home {
             super(context, cards);
         }
 
-        public List<Card> getCards() {
-            List<Card> cardsToReturn = new ArrayList<Card>();
+        public List<CmCard> getCards() {
+            List<CmCard> cardsToReturn = new ArrayList<CmCard>();
             for(int i = 0; i < getCount(); i++) {
-                cardsToReturn.add(getItem(i));
+                cardsToReturn.add((CmCard)getItem(i));
             }
             return cardsToReturn;
         }
 
-        public Card getCardWithId(String id) {
-            Card theCard = null;
+        public CmCard getCardWithId(String id) {
+            CmCard theCard = null;
             for(int i = 0; i < getCount(); i++) {
-                Card card = getItem(i);
+                CmCard card = (CmCard) getItem(i);
                 if (card.getId().equals(id)) {
                     theCard = card;
                     break;
@@ -450,6 +434,19 @@ public class HomeStub implements Home {
                     break;
                 }
             }
+        }
+    }
+
+    private class RefreshAllCardsRunnable implements Runnable {
+        private boolean mAddNew = false;
+
+        private RefreshAllCardsRunnable(boolean addNew) {
+            mAddNew = addNew;
+        }
+
+        @Override
+        public void run() {
+            refreshCards(mAddNew);
         }
     }
 

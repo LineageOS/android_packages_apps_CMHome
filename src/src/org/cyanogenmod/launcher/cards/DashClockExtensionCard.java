@@ -24,12 +24,12 @@ import android.widget.Toast;
 
 import com.google.android.apps.dashclock.api.ExtensionData;
 
+import it.gmariotti.cardslib.library.internal.Card;
 import org.cyanogenmod.launcher.dashclock.ExtensionManager;
 import org.cyanogenmod.launcher.home.R;
 
 import java.io.FileNotFoundException;
 
-import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardExpand;
 import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
@@ -38,7 +38,7 @@ import it.gmariotti.cardslib.library.internal.ViewToClickToExpand;
 /**
  * This class provides a card that will represent a DashClock Extension
  */
-public class DashClockExtensionCard extends Card {
+public class DashClockExtensionCard extends CmCard {
     private final static String TAG = "DashClockExtensionCard";
     private ExtensionManager.ExtensionWithData mExtensionWithData;
     private Context mHostActivityContext;
@@ -80,6 +80,12 @@ public class DashClockExtensionCard extends Card {
         setSwipeable(true);
 
         setId(mFlattenedComponentNameString);
+    }
+
+    @Override
+    public void onUndoSwipe(Card card, boolean timedOut) {
+        // TODO Store the ID of the card that was swiped, so we can not bring it back unless
+        // we want to for some new reason
     }
 
     public void updateFromExtensionWithData(ExtensionManager.ExtensionWithData extensionWithData) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import org.cyanogenmod.launcher.cards.CmCard;
 import org.cyanogenmod.launcher.cards.DashClockExtensionCard;
 import org.cyanogenmod.launcher.dashclock.ExtensionHost;
 import org.cyanogenmod.launcher.dashclock.ExtensionManager;
@@ -50,6 +51,13 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
     }
 
     @Override
+    public void onDestroy(Context context) {
+        mExtensionManager.removeOnChangeListener(this);
+        mExtensionHost.destroy();
+        mExtensionManager.setActiveExtensions(new ArrayList<ComponentName>());
+    }
+
+    @Override
     public void onHide(Context context) {
         // Tear down the extension connections when the app is hidden,
         // so that we don't block other readers (i.e. actual dashclock).
@@ -59,8 +67,8 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
     }
 
     @Override
-    public List<Card> getCards() {
-        List<Card> cards = new ArrayList<Card>();
+    public List<CmCard> getCards() {
+        List<CmCard> cards = new ArrayList<CmCard>();
 
         for(ExtensionManager.ExtensionWithData extensionWithData :
                 mExtensionManager.getActiveExtensionsWithData()) {
@@ -86,12 +94,12 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
     }
 
     @Override
-    public CardProviderUpdateResult updateAndAddCards(List<Card> cards) {
+    public CardProviderUpdateResult updateAndAddCards(List<CmCard> cards) {
         List<ExtensionManager.ExtensionWithData> extensions
                 = mExtensionManager.getActiveExtensionsWithData();
 
         // A List of cards to return that must be removed
-        List<Card> cardsToRemove = new ArrayList<Card>();
+        List<CmCard> cardsToRemove = new ArrayList<CmCard>();
 
         // Create a map from ComponentName String -> extensionWithData
         HashMap<String, ExtensionManager.ExtensionWithData> map
@@ -100,7 +108,7 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
             map.put(extension.listing.componentName.flattenToString(), extension);
         }
 
-        for(Card card : cards) {
+        for(CmCard card : cards) {
             if(card instanceof DashClockExtensionCard) {
                 DashClockExtensionCard dashClockExtensionCard
                         = (DashClockExtensionCard) card;
@@ -123,7 +131,7 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
         }
 
         // A List of cards to return that must be added
-        List<Card> cardsToAdd = new ArrayList<Card>();
+        List<CmCard> cardsToAdd = new ArrayList<CmCard>();
 
         // Create new cards for extensions that were not represented
         for(Map.Entry<String, ExtensionManager.ExtensionWithData> entry : map.entrySet()) {
@@ -163,7 +171,7 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
     }
 
     @Override
-    public void updateCard(Card card) {
+    public void updateCard(CmCard card) {
         if (!(card instanceof DashClockExtensionCard)) {
             return;
         }
@@ -180,7 +188,7 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
         }
     }
 
-    public Card createCardForId(String id) {
+    public CmCard createCardForId(String id) {
         List<ExtensionManager.ExtensionWithData> extensions
                 = mExtensionManager.getActiveExtensionsWithData();
 
@@ -204,7 +212,7 @@ public class DashClockExtensionCardProvider implements ICardProvider, ExtensionM
     public void onExtensionsChanged(ComponentName sourceExtension) {
         if (sourceExtension != null) {
             for (CardProviderUpdateListener listener : mUpdateListeners) {
-                listener.onCardProviderUpdate(sourceExtension.flattenToString());
+                listener.onCardProviderUpdate(sourceExtension.flattenToString(), false);
             }
         }
     }
