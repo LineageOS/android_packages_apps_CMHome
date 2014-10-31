@@ -16,7 +16,7 @@ import it.gmariotti.cardslib.library.internal.Card;
  * A custom card that will show a title and message only.
  * Swipe is also enabled by default.
  */
-public class SimpleMessageCard extends Card {
+public class SimpleMessageCard extends CmCard {
     private String mBody;
 
     public SimpleMessageCard(Context context) {
@@ -26,6 +26,11 @@ public class SimpleMessageCard extends Card {
     public SimpleMessageCard(final Context context, int innerLayout) {
         super(context, innerLayout);
         setSwipeable(true);
+    }
+
+    @Override
+    public void onUndoSwipe(Card card, boolean timedOut) {
+        // TODO implement undo handling
     }
 
     public void setBody(String body) {
