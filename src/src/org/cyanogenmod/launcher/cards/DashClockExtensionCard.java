@@ -236,7 +236,10 @@ public class DashClockExtensionCard extends Card {
                 mImageSource = Integer.toString(mExtensionData.icon());
             }
             // Return an all white (leaving alpha alone) version of the icon.
-            return applyWhiteColorFilter(bitmapToReturn);
+            if (bitmapToReturn != null) {
+                bitmapToReturn = applyWhiteColorFilter(bitmapToReturn);
+            }
+            return bitmapToReturn;
         }
 
         private void updateImageSource() {
