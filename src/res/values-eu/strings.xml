@@ -16,12 +16,12 @@
      limitations under the License.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-  <string name="app_name">CM Home</string>
+  <string name="app_name">CM Hasiera</string>
   <string name="permission_label_read_extension_data">DashClock hedapenen datuak eskatu</string>
   <string name="permission_desc_read_extension_data">Aplikazioa DashClock hedapenen datuak eskatzera baimentzen du</string>
   <string name="dashclock_activity_not_found_toast_message">Hedapen honentzako aurrezarritako ekintza ez da aurkitu. Informazio gehiagorako garatzaileekin kontaktuan jarri, mesedez.</string>
   <string name="dashclock_card_expand_action">Ekintza</string>
   <string name="dashclock_card_expand_settings">Ezarpenak</string>
   <string name="no_extensions_card_title">Lortu hedapenen bat!</string>
-  <string name="no_extensions_card_body">Ez duzula hedapenik instalatuta dirudi. CM Home-k DashClock hedapenak onartzen ditu, beraz lortu itzazu batzuk eta itzul zaitez hona!</string>
+  <string name="no_extensions_card_body">Badirudi ez duzula hedapenik instalatuta. CM hasiera-pantailak DashClock hedapenak onartzen ditu, eskuratu batzuk eta itzul zaitez hona!</string>
 </resources>
